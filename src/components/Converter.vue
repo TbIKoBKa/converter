@@ -1,32 +1,40 @@
 <template>
-  <div class="converter">
-			<h1>Currency Converter</h1>
-			<label class="label">
-				Enter Amount:
-				<input type="number" v-model="converter.amount" v-bind:onchange="resultConverter()">
-			</label>
-			<label class="label">
-				<select v-model="converter.from" @click="resultConverter()">
-					<option value="EUR">Euro</option>
-					<option value="USD">Dollar USA</option>
-					<option value="RUR">Rub</option>
-					<option value="UAH">Гривна</option>
-				</select>
-			</label>
-			<label class="label">
-				<select v-model="converter.to" @click="resultConverter()">
-					<option value="EUR">Euro</option>
-					<option value="USD">Dollar USA</option>
-					<option value="RUR">Rub</option>
-					<option value="UAH">Гривна</option>
-				</select>
-			</label>
-			<p>
-				<span>{{ `${converter.amount} ${converter.from}` }}</span>
-				equals
-				<span>{{ `${converter.result} ${converter.to}` }}</span>
-			</p>
+	<div class="converter">
+		<h1>Currency Converter</h1>
+		<label class="label">
+			Enter Amount:
+			<input type="number" v-model="converter.amount" v-bind:onchange="resultConverter()">
+		</label>
+		<label class="label">
+			<select v-model="converter.from" @click="resultConverter()">
+				<option value="EUR">Euro</option>
+				<option value="USD">Dollar USA</option>
+				<option value="RUR">Rub</option>
+				<option value="UAH">Гривна</option>
+			</select>
+		</label>
+		<label class="label">
+			<select v-model="converter.to" @click="resultConverter()">
+				<option value="EUR">Euro</option>
+				<option value="USD">Dollar USA</option>
+				<option value="RUR">Rub</option>
+				<option value="UAH">Гривна</option>
+			</select>
+		</label>
+		<p>
+			<span>{{ `${converter.amount} ${converter.from}` }}</span>
+			equals
+			<span>{{ `${converter.result} ${converter.to}` }}</span>
+		</p>
+		<div id = "databinding">
+			<input v-model = "name" placeholder = "Enter Name" /><br/>
+			<span style = "font-size:25px;"><b>Letter count is : {{name | countletters}}</b></span>
 		</div>
+		<div id = "databinding">
+			<input v-model = "value" placeholder = "Enter value" /><br/>
+			<span style = "font-size:25px;"><b>Number {{value | roundValue}}</b></span>
+		</div>
+	</div>
 </template>
 
 <script>
@@ -52,11 +60,23 @@ export default {
 				result: '',
 			},
 			ccy: [],
+			name: "",
+			value: "",
 		}
     },
     mounted() {
         axios.get('https://api.privatbank.ua/p24api/pubinfo?json&exchange&coursid=5').then((response) => this.ccy = response.data)
     },
+	filters : {
+		countletters : function(value) {
+			return value.length;
+		},
+		roundValue : function(value) {
+			const values = value.split('.');
+
+			return `${values[0]}${values[1] ? "." + values[1].slice(0, 2) : " "}`
+		}
+	},
     methods: {
         deleteStudent(studId) {
             this.students = this.students.filter(elem => {
